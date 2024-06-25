@@ -1,53 +1,59 @@
-Telegram.WebApp.ready()
+const tg = window.Telegram.WebApp
 
-var initData = Telegram.WebApp.initData || ''
-var initDataUnsafe = Telegram.WebApp.initDataUnsafe || {}
+tg.ready()
 
-
-
-console.log(initDataUnsafe)
+const initData = tg.initData
+const initDataUnsafe = tg.initDataUnsafe
 
 function sendMessage(msg_id, with_webview) {
 	if (!initDataUnsafe.query_id) {
 		alert('WebViewQueryId not defined')
 		return
 	}
-	$('button').prop('disabled', true)
-	$('#btn_status').text('Sending...').removeClass('ok err').show()
-	$.ajax('/demo/sendMessage', {
-		type: 'POST',
-		data: {
+
+	document
+		.querySelectorAll('button')
+		.forEach((button) => (button.disabled = true))
+
+	const btnStatus = document.getElementById('btn_status')
+	btnStatus.textContent = 'Sending...'
+	btnStatus.classList.remove('ok', 'err')
+	btnStatus.style.display = 'block'
+
+	axios
+		.post('/demo/sendMessage', {
 			_auth: initData,
 			msg_id: msg_id || '',
 			with_webview: !initDataUnsafe.receiver && with_webview ? 1 : 0
-		},
-		dataType: 'json',
-		success: function (result) {
-			$('button').prop('disabled', false)
-			if (result.response) {
-				if (result.response.ok) {
-					$('#btn_status')
-						.html('Message sent successfully!')
-						.addClass('ok')
-						.show()
+		})
+		.then(function (response) {
+			document
+				.querySelectorAll('button')
+				.forEach((button) => (button.disabled = false))
+
+			if (response.data.response) {
+				if (response.data.response.ok) {
+					btnStatus.innerHTML = 'Message sent successfully!'
+					btnStatus.classList.add('ok')
 				} else {
-					$('#btn_status')
-						.text(result.response.description)
-						.addClass('err')
-						.show()
-					alert(result.response.description)
+					btnStatus.textContent = response.data.response.description
+					btnStatus.classList.add('err')
+					alert(response.data.response.description)
 				}
 			} else {
-				$('#btn_status').text('Unknown error').addClass('err').show()
+				btnStatus.textContent = 'Unknown error'
+				btnStatus.classList.add('err')
 				alert('Unknown error')
 			}
-		},
-		error: function (xhr) {
-			$('button').prop('disabled', false)
-			$('#btn_status').text('Server error').addClass('err').show()
+		})
+		.catch(function (error) {
+			document
+				.querySelectorAll('button')
+				.forEach((button) => (button.disabled = false))
+			btnStatus.textContent = 'Server error'
+			btnStatus.classList.add('err')
 			alert('Server error')
-		}
-	})
+		})
 }
 
 function webviewExpand() {
@@ -61,22 +67,14 @@ function webviewClose() {
 function requestLocation(el) {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function (position) {
-			$(el)
-				.next('span')
-				.html(
-					'(' +
-						position.coords.latitude +
-						', ' +
-						position.coords.longitude +
-						')'
-				)
-				.attr('class', 'ok')
+			el.nextElementSibling.innerHTML =
+				'(' + position.coords.latitude + ', ' + position.coords.longitude + ')'
+			el.nextElementSibling.setAttribute('class', 'ok')
 		})
 	} else {
-		$(el)
-			.next('span')
-			.html('Geolocation is not supported in this browser.')
-			.attr('class', 'err')
+		el.nextElementSibling.innerHTML =
+			'Geolocation is not supported in this browser.'
+		el.nextElementSibling.setAttribute('class', 'err')
 	}
 	return false
 }
@@ -89,13 +87,13 @@ function requestVideo(el) {
 				video: true
 			})
 			.then(function (stream) {
-				$(el).next('span').html('(Access granted)').attr('class', 'ok')
+				el.nextElementSibling.innerHTML = '(Access granted)'
+				el.nextElementSibling.setAttribute('class', 'ok')
 			})
 	} else {
-		$(el)
-			.next('span')
-			.html('Media devices is not supported in this browser.')
-			.attr('class', 'err')
+		el.nextElementSibling.innerHTML =
+			'Media devices is not supported in this browser.'
+		el.nextElementSibling.setAttribute('class', 'err')
 	}
 	return false
 }
@@ -108,49 +106,79 @@ function requestAudio(el) {
 				video: false
 			})
 			.then(function (stream) {
-				$(el).next('span').html('(Access granted)').attr('class', 'ok')
+				el.nextElementSibling.innerHTML = '(Access granted)'
+				el.nextElementSibling.setAttribute('class', 'ok')
 			})
 	} else {
-		$(el)
-			.next('span')
-			.html('Media devices is not supported in this browser.')
-			.attr('class', 'err')
+		el.nextElementSibling.innerHTML =
+			'Media devices is not supported in this browser.'
+		el.nextElementSibling.setAttribute('class', 'err')
 	}
 	return false
 }
 
 Telegram.WebApp.onEvent('themeChanged', function () {
-	$('#theme_data').html(JSON.stringify(Telegram.WebApp.themeParams, null, 2))
+	document.getElementById('theme_data').innerHTML = JSON.stringify(
+		Telegram.WebApp.themeParams,
+		null,
+		2
+	)
 })
 
-$('#main_btn').toggle(!!initDataUnsafe.query_id)
-$('#with_webview_btn').toggle(
-	!!initDataUnsafe.query_id && !initDataUnsafe.receiver
+document.getElementById('main_btn').style.display = initDataUnsafe.query_id
+	? 'block'
+	: 'none'
+document.getElementById('with_webview_btn').style.display =
+	initDataUnsafe.query_id && !initDataUnsafe.receiver ? 'block' : 'none'
+// document.getElementById('data_btn').style.display = !initDataUnsafe.query_id || !initDataUnsafe.receiver ? 'block' : 'none';
+document.getElementById('webview_data').innerHTML = JSON.stringify(
+	initDataUnsafe,
+	null,
+	2
 )
-// $('#data_btn').toggle(!initDataUnsafe.query_id || !initDataUnsafe.receiver);
-$('#webview_data').html(JSON.stringify(initDataUnsafe, null, 2))
-$('#theme_data').html(JSON.stringify(Telegram.WebApp.themeParams, null, 2))
-$('#regular_link').attr('href', $('#regular_link').attr('href') + location.hash)
-$('#text_field').focus()
+document.getElementById('theme_data').innerHTML = JSON.stringify(
+	Telegram.WebApp.themeParams,
+	null,
+	2
+)
+document
+	.getElementById('regular_link')
+	.setAttribute(
+		'href',
+		document.getElementById('regular_link').getAttribute('href') + location.hash
+	)
+// document.getElementById('text_field').focus()
+
 if (initDataUnsafe.query_id && initData) {
-	$('#webview_data_status').show()
-	$.ajax('/demo/checkData', {
-		type: 'POST',
-		data: { _auth: initData },
-		dataType: 'json',
-		success: function (result) {
-			if (result.ok) {
-				$('#webview_data_status').html('Hash is correct').addClass('ok')
+	document.getElementById('webview_data_status').style.display = 'block'
+	axios
+		.post('/demo/checkData', {
+			_auth: initData
+		})
+		.then(function (response) {
+			if (response.data.ok) {
+				document.getElementById('webview_data_status').innerHTML =
+					'Hash is correct'
+				document
+					.getElementById('webview_data_status')
+					.setAttribute('class', 'ok')
 			} else {
-				$('#webview_data_status').html(result.error).addClass('err')
+				document.getElementById('webview_data_status').innerHTML =
+					response.data.error
+				document
+					.getElementById('webview_data_status')
+					.setAttribute('class', 'err')
 			}
-		},
-		error: function (xhr) {
-			$('#webview_data_status').html('Server error').addClass('err')
-		}
-	})
+		})
+		.catch(function (error) {
+			document.getElementById('webview_data_status').innerHTML = 'Server error'
+			document
+				.getElementById('webview_data_status')
+				.setAttribute('class', 'err')
+		})
 }
-$('body').css('visibility', '')
+
+document.body.style.visibility = 'visible'
 Telegram.WebApp.MainButton.setText('CLOSE WEBVIEW_MY')
 	.show()
 	.onClick(function () {
@@ -175,18 +203,22 @@ function round(val, d) {
 }
 
 function setViewportData() {
-	$('.viewport_border').attr(
-		'text',
-		window.innerWidth + ' x ' + round(Telegram.WebApp.viewportHeight, 2)
-	)
-	$('.viewport_stable_border').attr(
-		'text',
-		window.innerWidth +
-			' x ' +
-			round(Telegram.WebApp.viewportStableHeight, 2) +
-			' | is_expanded: ' +
-			(Telegram.WebApp.isExpanded ? 'true' : 'false')
-	)
+	document
+		.querySelector('.viewport_border')
+		.setAttribute(
+			'text',
+			window.innerWidth + ' x ' + round(Telegram.WebApp.viewportHeight, 2)
+		)
+	document
+		.querySelector('.viewport_stable_border')
+		.setAttribute(
+			'text',
+			window.innerWidth +
+				' x ' +
+				round(Telegram.WebApp.viewportStableHeight, 2) +
+				' | is_expanded: ' +
+				(Telegram.WebApp.isExpanded ? 'true' : 'false')
+		)
 }
 
 Telegram.WebApp.onEvent('viewportChanged', setViewportData)
