@@ -14,16 +14,8 @@
 		<link rel="stylesheet" href="style.css" />
 		<script src="https://telegram.org/js/telegram-web-app.js?1"></script>
 		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-		<script>
-			function setThemeClass() {
-				document.documentElement.className = Telegram.WebApp.colorScheme
-			}
-
-			Telegram.WebApp.onEvent('themeChanged', setThemeClass)
-			setThemeClass()
-		</script>
 	</head>
+
 	<body style="visibility: hidden">
 		<section>
 			<button id="main_btn" onclick="sendMessage('');">
@@ -35,7 +27,7 @@
 			<button onclick="webviewExpand();">Expand Webview</button>
 			<button onclick="toggleMainButton(this);">Hide Main Button</button>
 			<div id="btn_status" class="hint" style="display: none"></div>
-      
+
 			<p>Test links:</p>
 			<ul>
 				<li>
@@ -97,7 +89,7 @@
 		<div class="viewport_border"></div>
 		<div class="viewport_stable_border"></div>
 		<script src="https://webappcontent.telegram.org/js/jquery.min.js"></script>
-		<script src="app.js"></script>
+		<script src="app2.js"></script>
 	</body>
 </html>
 <!-- page generated in 1.11ms -->

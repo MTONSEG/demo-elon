@@ -1,9 +1,15 @@
-const tg = window.Telegram.WebApp
+const tg = window.tg
+
+setThemeClass()
 
 tg.ready()
 
 const initData = tg.initData
 const initDataUnsafe = tg.initDataUnsafe
+
+function setThemeClass() {
+	document.documentElement.className = tg.colorScheme
+}
 
 function sendMessage(msg_id, with_webview) {
 	if (!initDataUnsafe.query_id) {
@@ -57,11 +63,11 @@ function sendMessage(msg_id, with_webview) {
 }
 
 function webviewExpand() {
-	Telegram.WebApp.expand()
+	tg.expand()
 }
 
 function webviewClose() {
-	Telegram.WebApp.close()
+	tg.close()
 }
 
 function requestLocation(el) {
@@ -117,9 +123,9 @@ function requestAudio(el) {
 	return false
 }
 
-Telegram.WebApp.onEvent('themeChanged', function () {
+tg.onEvent('themeChanged', function () {
 	document.getElementById('theme_data').innerHTML = JSON.stringify(
-		Telegram.WebApp.themeParams,
+		tg.themeParams,
 		null,
 		2
 	)
@@ -137,7 +143,7 @@ document.getElementById('webview_data').innerHTML = JSON.stringify(
 	2
 )
 document.getElementById('theme_data').innerHTML = JSON.stringify(
-	Telegram.WebApp.themeParams,
+	tg.themeParams,
 	null,
 	2
 )
@@ -179,14 +185,14 @@ if (initDataUnsafe.query_id && initData) {
 }
 
 document.body.style.visibility = 'visible'
-Telegram.WebApp.MainButton.setText('CLOSE WEBVIEW_MY')
+tg.MainButton.setText('CLOSE WEBVIEW_MY')
 	.show()
 	.onClick(function () {
 		webviewClose()
 	})
 
 function toggleMainButton(el) {
-	var mainButton = Telegram.WebApp.MainButton
+	var mainButton = tg.MainButton
 
 	if (mainButton.isVisible) {
 		mainButton.hide()
@@ -207,7 +213,7 @@ function setViewportData() {
 		.querySelector('.viewport_border')
 		.setAttribute(
 			'text',
-			window.innerWidth + ' x ' + round(Telegram.WebApp.viewportHeight, 2)
+			window.innerWidth + ' x ' + round(tg.viewportHeight, 2)
 		)
 	document
 		.querySelector('.viewport_stable_border')
@@ -215,11 +221,13 @@ function setViewportData() {
 			'text',
 			window.innerWidth +
 				' x ' +
-				round(Telegram.WebApp.viewportStableHeight, 2) +
+				round(tg.viewportStableHeight, 2) +
 				' | is_expanded: ' +
-				(Telegram.WebApp.isExpanded ? 'true' : 'false')
+				(tg.isExpanded ? 'true' : 'false')
 		)
 }
 
-Telegram.WebApp.onEvent('viewportChanged', setViewportData)
+tg.onEvent('viewportChanged', setViewportData)
 setViewportData()
+
+tg.onEvent('themeChanged', setThemeClass)
