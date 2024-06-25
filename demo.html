@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="MobileOptimized" content="176" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="robots" content="noindex,nofollow" />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js?1"></script>
+
+    <script>
+      function setThemeClass() {
+        document.documentElement.className = Telegram.WebApp.colorScheme;
+      }
+
+      Telegram.WebApp.onEvent("themeChanged", setThemeClass);
+      setThemeClass();
+    </script>
+
+
+  </head>
+  <body style="visibility: hidden">
+    <section>
+      <button id="main_btn" onclick="sendMessage('');">Send «Hello, World!»</button>
+      <button id="with_webview_btn" onclick="sendMessage('', true);">
+        Send «Hello, World!» with inline webview button
+      </button>
+      <button onclick="webviewExpand();">Expand Webview</button>
+      <button onclick="toggleMainButton(this);">Hide Main Button</button>
+      <div id="btn_status" class="hint" style="display: none"></div>
+      <p>Test links:</p>
+      <ul>
+        <li><a id="regular_link" href="?nextpage=1">Regular link #1</a> (opens inside webview)</li>
+        <li><a href="https://telegram.org/" target="_blank">target="_blank" link</a> (opens outside webview)</li>
+        <li>
+          <a href="javascript:window.open('https://telegram.org/');">window.open() link</a>
+          (opens outside webview)
+        </li>
+        <li><a href="https://t.me/like">LikeBot t.me link</a> (opens inside Telegram app)</li>
+        <li><a href="tg://resolve?domain=vote">VoteBot tg:// link</a> (does not open)</li>
+      </ul>
+      <p>Test permissions:</p>
+      <ul>
+        <li><a href="javascript:;" onclick="return requestLocation(this);">Request Location</a> <span></span></li>
+        <li><a href="javascript:;" onclick="return requestVideo(this);">Request Video</a> <span></span></li>
+        <li><a href="javascript:;" onclick="return requestAudio(this);">Request Audio</a> <span></span></li>
+      </ul>
+      <pre><code id="webview_data"></code></pre>
+      <div class="hint">
+        Data passed to webview.
+        <span id="webview_data_status" style="display: none">Checking hash...</span>
+      </div>
+      <pre><code id="theme_data"></code></pre>
+      <div class="hint">Theme params</div>
+    </section>
+    <div class="viewport_border"></div>
+    <div class="viewport_stable_border"></div>
+    <script src="https://webappcontent.telegram.org/js/jquery.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
+<!-- page generated in 1.11ms -->
