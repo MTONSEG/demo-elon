@@ -1,4 +1,4 @@
-const tg = window.tg
+const tg = window.Telegram.WebApp
 
 setThemeClass()
 
@@ -70,89 +70,81 @@ function webviewClose() {
 	tg.close()
 }
 
-function requestLocation(el) {
-	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(function (position) {
-			el.nextElementSibling.innerHTML =
-				'(' + position.coords.latitude + ', ' + position.coords.longitude + ')'
-			el.nextElementSibling.setAttribute('class', 'ok')
-		})
-	} else {
-		el.nextElementSibling.innerHTML =
-			'Geolocation is not supported in this browser.'
-		el.nextElementSibling.setAttribute('class', 'err')
-	}
-	return false
-}
+// function requestLocation(el) {
+// 	if (navigator.geolocation) {
+// 		navigator.geolocation.getCurrentPosition(function (position) {
+// 			el.nextElementSibling.innerHTML =
+// 				'(' + position.coords.latitude + ', ' + position.coords.longitude + ')'
+// 			el.nextElementSibling.setAttribute('class', 'ok')
+// 		})
+// 	} else {
+// 		el.nextElementSibling.innerHTML =
+// 			'Geolocation is not supported in this browser.'
+// 		el.nextElementSibling.setAttribute('class', 'err')
+// 	}
+// 	return false
+// }
 
-function requestVideo(el) {
-	if (navigator.mediaDevices) {
-		navigator.mediaDevices
-			.getUserMedia({
-				audio: false,
-				video: true
-			})
-			.then(function (stream) {
-				el.nextElementSibling.innerHTML = '(Access granted)'
-				el.nextElementSibling.setAttribute('class', 'ok')
-			})
-	} else {
-		el.nextElementSibling.innerHTML =
-			'Media devices is not supported in this browser.'
-		el.nextElementSibling.setAttribute('class', 'err')
-	}
-	return false
-}
+// function requestVideo(el) {
+// 	if (navigator.mediaDevices) {
+// 		navigator.mediaDevices
+// 			.getUserMedia({
+// 				audio: false,
+// 				video: true
+// 			})
+// 			.then(function (stream) {
+// 				el.nextElementSibling.innerHTML = '(Access granted)'
+// 				el.nextElementSibling.setAttribute('class', 'ok')
+// 			})
+// 	} else {
+// 		el.nextElementSibling.innerHTML =
+// 			'Media devices is not supported in this browser.'
+// 		el.nextElementSibling.setAttribute('class', 'err')
+// 	}
+// 	return false
+// }
 
-function requestAudio(el) {
-	if (navigator.mediaDevices) {
-		navigator.mediaDevices
-			.getUserMedia({
-				audio: true,
-				video: false
-			})
-			.then(function (stream) {
-				el.nextElementSibling.innerHTML = '(Access granted)'
-				el.nextElementSibling.setAttribute('class', 'ok')
-			})
-	} else {
-		el.nextElementSibling.innerHTML =
-			'Media devices is not supported in this browser.'
-		el.nextElementSibling.setAttribute('class', 'err')
-	}
-	return false
-}
+// function requestAudio(el) {
+// 	if (navigator.mediaDevices) {
+// 		navigator.mediaDevices
+// 			.getUserMedia({
+// 				audio: true,
+// 				video: false
+// 			})
+// 			.then(function (stream) {
+// 				el.nextElementSibling.innerHTML = '(Access granted)'
+// 				el.nextElementSibling.setAttribute('class', 'ok')
+// 			})
+// 	} else {
+// 		el.nextElementSibling.innerHTML =
+// 			'Media devices is not supported in this browser.'
+// 		el.nextElementSibling.setAttribute('class', 'err')
+// 	}
+// 	return false
+// }
 
-tg.onEvent('themeChanged', function () {
-	document.getElementById('theme_data').innerHTML = JSON.stringify(
-		tg.themeParams,
-		null,
-		2
-	)
-})
-
-document.getElementById('main_btn').style.display = initDataUnsafe.query_id
-	? 'block'
-	: 'none'
-document.getElementById('with_webview_btn').style.display =
-	initDataUnsafe.query_id && !initDataUnsafe.receiver ? 'block' : 'none'
+// document.getElementById('main_btn').style.display = initDataUnsafe.query_id
+// 	? 'block'
+// 	: 'none'
+// document.getElementById('with_webview_btn').style.display =
+// 	initDataUnsafe.query_id && !initDataUnsafe.receiver ? 'block' : 'none'
 // document.getElementById('data_btn').style.display = !initDataUnsafe.query_id || !initDataUnsafe.receiver ? 'block' : 'none';
-document.getElementById('webview_data').innerHTML = JSON.stringify(
-	initDataUnsafe,
-	null,
-	2
-)
-document.getElementById('theme_data').innerHTML = JSON.stringify(
-	tg.themeParams,
-	null,
-	2
-)
-document
-	.getElementById('regular_link')
-	.setAttribute(
-		'href',
-		document.getElementById('regular_link').getAttribute('href') + location.hash
-	)
+// document.getElementById('webview_data').innerHTML = JSON.stringify(
+// 	initDataUnsafe,
+// 	null,
+// 	2
+// )
+// document.getElementById('theme_data').innerHTML = JSON.stringify(
+// 	tg.themeParams,
+// 	null,
+// 	2
+// )
+// document
+// 	.getElementById('regular_link')
+// 	.setAttribute(
+// 		'href',
+// 		document.getElementById('regular_link').getAttribute('href') + location.hash
+// 	)
 // document.getElementById('text_field').focus()
 
 if (initDataUnsafe.query_id && initData) {
@@ -231,3 +223,11 @@ tg.onEvent('viewportChanged', setViewportData)
 setViewportData()
 
 tg.onEvent('themeChanged', setThemeClass)
+
+tg.onEvent('themeChanged', function () {
+	document.getElementById('theme_data').innerHTML = JSON.stringify(
+		tg.themeParams,
+		null,
+		2
+	)
+})
